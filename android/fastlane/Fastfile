@@ -1,0 +1,69 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "./代表的是android文件夹"
+  
+  puts("------设置App名称，App版本更新------")
+  # next 表示提前退出
+
+  # 设置App名称
+  apk_name = "功夫熊猫";
+  android_change_string_app_name(newName: apk_name);
+  # versionCode + 1
+  increment_version_code(app_project_dir: './app')
+  # versionName增加 可选值 'patch'、'minor'、'major'
+  increment_version_name(app_project_dir: './app', bump_type: 'patch')
+
+  puts("------打包前App信息：------")
+  # 获取版本名称
+  version_name = get_version_name(app_project_dir: './app');
+  # 获取版本号
+  version_code = get_version_code(app_project_dir: './app');
+  puts(apk_name + "; versionCode: " + version_code + "; versionName: " + version_name);
+
+  lane :beta do
+    puts("开始打包Android APK!");
+    gradle(
+      task: 'assemble', 
+      build_type: 'Release',
+       print_command: true,   
+      properties: {
+        "android.injected.signing.store.file" => "./keystores/keystore",
+        "android.injected.signing.store.password" => "12345678",
+        "android.injected.signing.key.alias" => "12345",
+        "android.injected.signing.key.password" => "12345678",
+      },
+    );
+    puts("------打包后App信息：------")
+    app_info;
+
+    # 获取Apk默认输出路径
+    apk_file_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH];
+    # 重新命名Fastlane默认Apk文件，并移动到/fastlane/packages目录下
+    fastlane_directory = Dir.pwd
+    apk_name = apk_name + "_" + version_code + "_" + version_name + ".apk";
+    apk_path = fastlane_directory + "/packages/" +  apk_name;
+    sh("mv", apk_file_path, apk_path);
+
+    # 打印apk的完整路径
+    puts("apk保存路径： " + apk_path);
+    say("Android打包完成");
+    notification(title: "Android打包完成", message: "保存路径：" + apk_path);
+  end
+
+end

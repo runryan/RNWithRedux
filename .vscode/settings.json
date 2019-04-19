@@ -7,5 +7,6 @@
     "vetur.format.defaultFormatter.js": "prettier-eslint",
     "editor.formatOnSave": true,
     "flow.runOnAllFiles": true,
-    "color-highlight.markerType": "outline"
+    "color-highlight.markerType": "outline",
+    "java.configuration.updateBuildConfiguration": "disabled"
 }

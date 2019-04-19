@@ -2,7 +2,7 @@
 import { Place } from "../../models/Models";
 export type Action = {
   type: string,
-  payload: any
+  payload?: any
 };
 
 export type ReduxState = {

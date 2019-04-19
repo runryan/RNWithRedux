@@ -17,15 +17,19 @@ export const placeReducer = (
   const { placeList } = state;
   switch (action.type) {
     case ADD_PLACE:
-      const addedPlace = (action.payload: Place);
-      placeList.push(addedPlace);
-      return Object.assign({}, state, { placeList: placeList });
-
+      if (action.payload) {
+        const addedPlace: Place = action.payload;
+        placeList.push(addedPlace);
+        return Object.assign({}, state, { placeList: placeList });
+      }
+      return state;
     case DELETE_PLACE:
-      const removedPlace = (action.payload: Place);
-      const newPlaceList = removeItemFromArray(placeList, removedPlace);
-      return Object.assign({}, state, { placeList: newPlaceList });
-
+      if (action.payload) {
+        const addedPlace: Place = action.payload;
+        const removedPlace = (action.payload: Place);
+        const newPlaceList = removeItemFromArray(placeList, removedPlace);
+        return Object.assign({}, state, { placeList: newPlaceList });
+      }
     default:
       return state;
   }

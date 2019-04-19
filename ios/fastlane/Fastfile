@@ -1,0 +1,73 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "内测版本"
+  lane :beta do
+    puts("开始打包ipa文件");
+    target_name = "RNWithRedux";
+    xcproject_path = "./" + target_name + ".xcodeproj"
+    # 自动
+    increment_build_number(xcodeproj: xcproject_path)
+    # 可选值patch minor major
+    increment_version_number(bump_type: "patch", xcodeproj: xcproject_path)
+
+    # 设置应用名称
+    app_name = "功夫熊猫";
+    set_info_plist_value(path: "./RNWithRedux/Info.plist", key: "CFBundleDisplayName", value: app_name)
+
+    # 打包ipa
+    gym;
+
+    # 获取ipa路径
+    ipa_file_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+
+    # 获取ipa基本信息
+    app_name = get_ipa_info_plist_value(ipa: ipa_file_path, key: "CFBundleDisplayName")
+    package_name = get_ipa_info_plist_value(ipa: ipa_file_path, key: "CFBundleIdentifier")
+    version_name = get_ipa_info_plist_value(ipa: ipa_file_path, key: "CFBundleShortVersionString")
+    version_code = get_ipa_info_plist_value(ipa: ipa_file_path, key: "CFBundleVersion")
+    puts("iPA基本信息： app_name = " + app_name);
+    puts("iPA基本信息： package_name = " + package_name);
+    puts("iPA基本信息： version_name = " + version_name);
+    puts("iPA基本信息： version_code = " + version_code);
+
+    # 获取fastlane文件夹
+    fastlane_directory = Dir.pwd
+
+    # 在fastlane/packages文件夹下创建【应用名称+版本名称】的文件夹
+    package_version_directory = app_name + version_name;
+    create_package_version_dir_command = "./packages/" + package_version_directory;
+    sh("mkdir", "-p", create_package_version_dir_command);
+
+    # 重命名ipa
+    ipa_name = app_name + "_" + version_code + "_" + version_name + ".ipa";
+    ipa_path = fastlane_directory + "/packages/" + package_version_directory + "/" +  ipa_name;
+    sh("mv", ipa_file_path, ipa_path);
+
+    # 重命名dSYM文件
+    dSYM_file_name = target_name + ".app.dSYM.zip";
+    dSYM_file_path = fastlane_directory + "/packages/" + dSYM_file_name;
+    dSYM_file_name = app_name + "_" + version_code + "_" + version_name + ".app.dSYM.zip";
+    dSYM_path = fastlane_directory + "/packages/" + package_version_directory + "/" + dSYM_file_name;
+    sh("mv", dSYM_file_path, dSYM_path);
+
+    puts("ipa保存路径：" + ipa_path);
+    say("iOS打包完成");
+    notification(title: "iOS打包完成", message: "ipa路径：" + ipa_path);
+  end
+end
