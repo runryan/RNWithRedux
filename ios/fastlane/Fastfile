@@ -19,16 +19,20 @@ platform :ios do
   desc "内测版本"
   lane :beta do
     puts("开始打包ipa文件");
+
+    # 项目的Target名称
     target_name = "RNWithRedux";
     xcproject_path = "./" + target_name + ".xcodeproj"
+
     # 自动
     increment_build_number(xcodeproj: xcproject_path)
+
     # 可选值patch minor major
     increment_version_number(bump_type: "patch", xcodeproj: xcproject_path)
 
     # 设置应用名称
     app_name = "功夫熊猫";
-    set_info_plist_value(path: "./RNWithRedux/Info.plist", key: "CFBundleDisplayName", value: app_name)
+    set_info_plist_value(path: "./" + target_name + "/Info.plist", key: "CFBundleDisplayName", value: app_name)
 
     # 打包ipa
     gym;
@@ -51,7 +55,7 @@ platform :ios do
 
     # 在fastlane/packages文件夹下创建【应用名称+版本名称】的文件夹
     package_version_directory = app_name + version_name;
-    create_package_version_dir_command = "./packages/" + package_version_directory;
+    create_package_version_dir_command = fastlane_directory +"/packages/" + package_version_directory;
     sh("mkdir", "-p", create_package_version_dir_command);
 
     # 重命名ipa

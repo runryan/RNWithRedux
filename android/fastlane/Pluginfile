@@ -2,7 +2,7 @@
 #
 # Ensure this file is checked in to source control!
 
-gem 'fastlane-plugin-increment_version_code'
+# 修改App名称
 gem 'fastlane-plugin-android_change_string_app_name'
 gem 'fastlane-plugin-android_versioning'
 gem 'fastlane-plugin-app_info'

@@ -4,16 +4,10 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { globalStyles } from "../styles/GlobalStyles";
 import LogUtils from "../utils/log/LogUtils";
-import {
-  requestAsync,
-  startRequest,
-  endRequest
-} from "../redux/actions/networkActions";
+import { requestAsync } from "../redux/actions/networkActions";
 import { ToDo } from "../models/Models";
 
 type Props = {
-  startRequest: () => void,
-  endRequest: (payload: any) => void,
   requestAsync: () => void,
   networkState: string,
   data?: Array<ToDo>
@@ -29,7 +23,7 @@ class NetworkScreen extends Component<Props> {
   }
 
   request = () => {
-    const { startRequest, endRequest, requestAsync } = this.props;
+    const { requestAsync } = this.props;
     requestAsync();
   };
 
@@ -67,12 +61,6 @@ const mapDispatchToProps = dispatch => {
   return {
     requestAsync: () => {
       dispatch(requestAsync());
-    },
-    startRequest: () => {
-      dispatch(startRequest());
-    },
-    endRequest: result => {
-      dispatch(endRequest(result));
     }
   };
 };

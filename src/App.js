@@ -27,6 +27,7 @@ class App extends Component<{}, State> {
 
   componentDidMount = () => {
     setTimeout(() => {
+      console.log("跳转页面");
       this.setState({
         isDataReady: true
       });

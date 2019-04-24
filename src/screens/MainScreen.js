@@ -1,9 +1,10 @@
 // @flow
 // @format
 import React, { Component } from "react";
-import { Button, TextInput, StyleSheet } from "react-native";
-import { View, Text, FlatList } from "react-native";
+import { Button, TextInput, StyleSheet, StatusBar } from "react-native";
+import { View, Text, FlatList, ToolbarAndroid } from "react-native";
 import { NavigationScreenProp, NavigationState } from "react-navigation";
+import LinearGradient from "react-native-linear-gradient";
 
 import LogUtils from "../utils/log/LogUtils";
 import { globalStyles, dividerColor } from "../styles/GlobalStyles";
@@ -27,8 +28,15 @@ export default class MainScreen extends Component<Props> {
     super(props);
   }
   render() {
+    const { navigation } = this.props;
     return (
       <View style={[globalStyles.screenContainer, styles.screenContainer]}>
+        <StatusBar
+          barStyle="light-content"
+          translucent={true}
+          backgroundColor="#FF00"
+        />
+        <View style={styles.statusBarBackgroundView} />
         <View>
           <Button
             title="添加地址(Redux)"
@@ -40,8 +48,13 @@ export default class MainScreen extends Component<Props> {
           <Button
             title="网络请求（Redux-thunk）"
             onPress={() => {
-              const { navigation } = this.props;
               navigation.navigate("NetworkScreen");
+            }}
+          />
+          <Button
+            title="动画演示"
+            onPress={() => {
+              navigation.navigate("AnimationScreen");
             }}
           />
         </View>
@@ -52,6 +65,15 @@ export default class MainScreen extends Component<Props> {
 
 const styles = StyleSheet.create({
   screenContainer: {
-    justifyContent: "center"
+    justifyContent: "center",
+    position: "absolute",
+    width: "100%",
+    height: "100%"
+  },
+  statusBarBackgroundView: {
+    width: "100%",
+    position: "absolute",
+    backgroundColor: "#F00",
+    height: StatusBar.currentHeight
   }
 });

@@ -56,6 +56,10 @@ platform :android do
     apk_file_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH];
     # 重新命名Fastlane默认Apk文件，并移动到/fastlane/packages目录下
     fastlane_directory = Dir.pwd
+    # 创建packages文件夹
+    create_package_version_dir_command = fastlane_directory + "/packages";
+    sh("mkdir", "-p", create_package_version_dir_command);
+
     apk_name = apk_name + "_" + version_code + "_" + version_name + ".apk";
     apk_path = fastlane_directory + "/packages/" +  apk_name;
     sh("mv", apk_file_path, apk_path);
